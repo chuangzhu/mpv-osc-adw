@@ -51,8 +51,18 @@ local function add_box(name, x1, y1, x2, y2, action)
     hitboxes[#hitboxes + 1] = {name=name, x1=x1, y1=y1, x2=x2, y2=y2, action=action}
 end
 
-local function shape(a, path, x, y, size, color, alpha)
+local function shape(a, path, x, y, size, color, alpha, with_shadow)
     local scale = size / 16
+    if with_shadow ~= false then
+        -- Equivalent to Showtime's stacked CSS drop-shadows: one crisp edge
+        -- and one broad halo for bright or low-contrast video frames.
+        a:new_event()
+        a:append(string.format("{\\an7\\pos(%.1f,%.1f)\\p1\\fscx%.2f\\fscy%.2f\\bord0\\shad0\\blur1\\1c%s\\1a&H%02X&}", x, y, scale*100, scale*100, C.shadow, 70))
+        a:append(path)
+        a:new_event()
+        a:append(string.format("{\\an7\\pos(%.1f,%.1f)\\p1\\fscx%.2f\\fscy%.2f\\bord0\\shad0\\blur5\\1c%s\\1a&H%02X&}", x, y, scale*100, scale*100, C.shadow, 145))
+        a:append(path)
+    end
     a:new_event()
     a:append(string.format("{\\an7\\pos(%.1f,%.1f)\\p1\\fscx%.2f\\fscy%.2f\\bord0\\shad0\\1c%s\\1a&H%02X&}", x, y, scale*100, scale*100, color or C.white, alpha or 0))
     a:append(path)
@@ -61,6 +71,14 @@ end
 local function text(a, value, x, y, size, align, bold, alpha)
     a:new_event()
     a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnSans\\fs%d\\b%d\\bord0\\shad0\\1c%s\\1a&H%02X&}%s", align or 7, x, y, size, bold and 1 or 0, C.white, alpha or 0, esc(value)))
+end
+
+local function shadow_text(a, value, x, y, size, align, bold)
+    for _,layer in ipairs({{1,65},{5,145}}) do
+        a:new_event()
+        a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnSans\\fs%d\\b%d\\bord0\\shad0\\blur%d\\1c%s\\1a&H%02X&}%s", align or 7,x,y,size,bold and 1 or 0,layer[1],C.shadow,layer[2],esc(value)))
+    end
+    text(a,value,x,y,size,align,bold)
 end
 
 local function rect(a, x1, y1, x2, y2, color, alpha)
@@ -162,15 +180,15 @@ local function render()
     local margin, duration = 45, mp.get_property_number("duration", 0)
     local pos = mp.get_property_number("time-pos", 0)
     local title = mp.get_property("media-title", "Video"):gsub("%.[^%.]+$", "")
-    text(a, title, margin, bottom-58, 22, 7, true)
+    shadow_text(a, title, margin, bottom-58, 22, 7, true)
     local x1, x2, sy = margin, w-margin, bottom-18
     rect(a,x1,sy-2,x2,sy+2,C.track,80)
     local p = duration > 0 and math.max(0,math.min(1,pos/duration)) or 0
     rect(a,x1,sy-2,x1+(x2-x1)*p,sy+2,C.white,0)
     rect(a,x1+(x2-x1)*p-7,sy-7,x1+(x2-x1)*p+7,sy+7,C.white,0)
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
-    text(a,fmt_time(pos),margin,bottom+4,15,7,true)
-    text(a,fmt_time(duration),w-margin,bottom+4,15,9,true)
+    shadow_text(a,fmt_time(pos),margin,bottom+4,15,7,true)
+    shadow_text(a,fmt_time(duration),w-margin,bottom+4,15,9,true)
     hover_circle(a,w-94,bottom-59,23,w-120,bottom-85,w-77,bottom-45)
     shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,w-105,bottom-70,21)
     add_box("volume",w-120,bottom-85,w-77,bottom-45,function() volume_popup=not volume_popup; settings=false; menu=false; render() end)
@@ -213,9 +231,9 @@ local function render()
         settings_row("subtitles",44,82,function() mp.command("cycle sub") end)
         settings_row("repeat",94,135,function() mp.command("cycle loop-file") end)
         text(a,"Language",px+50,py+14,18,7,false)
-        shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70)
+        shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70,false)
         text(a,"Subtitles",px+50,py+52,18,7,false)
-        shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70)
+        shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70,false)
         rect(a,px+10,py+88,px+pw-10,py+89,C.white,210)
         text(a,"Repeat",px+50,py+102,18,7,false)
         rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
@@ -223,8 +241,8 @@ local function render()
         local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
         hover_circle(a,rotate_left_x,py+165,20,rotate_left_x-21,py+145,rotate_left_x+21,py+187)
         hover_circle(a,rotate_right_x,py+165,20,rotate_right_x-21,py+145,rotate_right_x+21,py+187)
-        shape(a,icon.rotate_left,rotate_left_x-8,py+157,16)
-        shape(a,icon.rotate_right,rotate_right_x-8,py+157,16)
+        shape(a,icon.rotate_left,rotate_left_x-8,py+157,16,C.white,0,false)
+        shape(a,icon.rotate_right,rotate_right_x-8,py+157,16,C.white,0,false)
         add_box("rotate-left",rotate_left_x-21,py+145,rotate_left_x+21,py+187,function() mp.commandv("add","video-rotate",-90) end)
         add_box("rotate-right",rotate_right_x-21,py+145,rotate_right_x+21,py+187,function() mp.commandv("add","video-rotate",90) end)
         rect(a,px+10,py+193,px+pw-10,py+194,C.white,210)
@@ -240,7 +258,7 @@ local function render()
         local px,py,pw=w-280,bottom-195,250
         triangle(a,w-118,py+78,w-94,py+94,w-70,py+78,C.panel,5)
         round_rect(a,px,py,px+pw,py+78,14,C.panel,5)
-        shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,px+20,py+28,21)
+        shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,px+20,py+28,21,C.white,0,false)
         add_box("mute",px+9,py+16,px+50,py+61,function() mp.command("cycle mute"); render() end)
         local vx1,vx2,vy=px+75,px+225,py+39; rect(a,vx1,vy-2,vx2,vy+2,C.track,80)
         local vol=math.min(100,mp.get_property_number("volume",100)); rect(a,vx1,vy-2,vx1+(vx2-vx1)*vol/100,vy+2,C.white,0); rect(a,vx1+(vx2-vx1)*vol/100-7,vy-7,vx1+(vx2-vx1)*vol/100+7,vy+7,C.white,0)
