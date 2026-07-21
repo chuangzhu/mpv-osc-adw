@@ -135,8 +135,15 @@ local function shade(a,w,h)
     blurred_rect(a,-80,h*.94,w+80,h+100,155,38)
 end
 
-local function hover_circle(a, x, y, radius, x1,y1,x2,y2)
-    if is_hovered(x1,y1,x2,y2) then round_rect(a,x-radius,y-radius,x+radius,y+radius,radius,C.white,217) end
+local function icon_button(a,o)
+    local hit=o.hit or {o.x-o.radius,o.y-o.radius,o.x+o.radius,o.y+o.radius}
+    if is_hovered(hit[1],hit[2],hit[3],hit[4]) then
+        round_rect(a,o.x-o.radius,o.y-o.radius,o.x+o.radius,o.y+o.radius,
+            o.radius,o.hover_color or C.white,o.hover_alpha or 217)
+    end
+    shape(a,o.icon,o.x-o.size/2,o.y-o.size/2,o.size,
+        o.color or C.white,o.alpha or 0,o.shadow)
+    add_box(o.name,hit[1],hit[2],hit[3],hit[4],o.action)
 end
 
 local function mouse()
@@ -180,26 +187,25 @@ local function render()
     shade(a,w,h)
 
     -- Header controls, anchored to corners and therefore invariant in pixels.
-    hover_circle(a,39,35,23,16,14,62,60)
-    shape(a, mp.get_property_native("fullscreen") and icon.restore or icon.fullscreen, 28, 24, 22)
-    add_box("fullscreen", 16, 14, 62, 60, function() mp.command("cycle fullscreen") end)
-    hover_circle(a,w-78,36,23,w-103,12,w-57,60)
-    shape(a, icon.menu, w - 88, 26, 20)
-    add_box("menu", w-103, 12, w-57, 60, function() menu=not menu; settings=false; render() end)
-    hover_circle(a,w-33,36,23,w-57,12,w-12,60)
-    shape(a, icon.close, w - 43, 25, 20)
-    add_box("close", w-57, 12, w-12, 60, function() mp.command("quit") end)
+    icon_button(a,{name="fullscreen",x=39,y=35,radius=23,size=22,
+        hit={16,14,62,60},icon=mp.get_property_native("fullscreen") and icon.restore or icon.fullscreen,
+        action=function() mp.command("cycle fullscreen") end})
+    icon_button(a,{name="menu",x=w-78,y=36,radius=23,size=20,
+        hit={w-103,12,w-57,60},icon=icon.menu,
+        action=function() menu=not menu; settings=false; volume_popup=false; render() end})
+    icon_button(a,{name="close",x=w-33,y=35,radius=23,size=20,
+        hit={w-57,12,w-12,60},icon=icon.close,action=function() mp.command("quit") end})
 
     -- Central transport controls.
-    hover_circle(a,w/2-72,cy,31,w/2-105,cy-37,w/2-45,cy+35)
-    hover_circle(a,w/2,cy,42,w/2-40,cy-42,w/2+40,cy+42)
-    hover_circle(a,w/2+72,cy,31,w/2+45,cy-37,w/2+105,cy+35)
-    shape(a, icon.rewind, w/2-84, cy-12, 24)
-    shape(a, mp.get_property_native("pause") and icon.play or icon.pause, w/2-18, cy-20, 38)
-    shape(a, icon.forward, w/2+60, cy-12, 24)
-    add_box("rewind",w/2-105,cy-37,w/2-45,cy+35,function() mp.commandv("seek",-10,"relative+exact") end)
-    add_box("pause",w/2-40,cy-42,w/2+40,cy+42,function() mp.command("cycle pause") end)
-    add_box("forward",w/2+45,cy-37,w/2+105,cy+35,function() mp.commandv("seek",10,"relative+exact") end)
+    icon_button(a,{name="rewind",x=w/2-72,y=cy,radius=31,size=24,
+        hit={w/2-105,cy-37,w/2-45,cy+35},icon=icon.rewind,
+        action=function() mp.commandv("seek",-10,"relative+exact") end})
+    icon_button(a,{name="pause",x=w/2,y=cy,radius=42,size=38,
+        hit={w/2-40,cy-42,w/2+40,cy+42},icon=mp.get_property_native("pause") and icon.play or icon.pause,
+        action=function() mp.command("cycle pause") end})
+    icon_button(a,{name="forward",x=w/2+72,y=cy,radius=31,size=24,
+        hit={w/2+45,cy-37,w/2+105,cy+35},icon=icon.forward,
+        action=function() mp.commandv("seek",10,"relative+exact") end})
 
     local margin, duration = 45, mp.get_property_number("duration", 0)
     local pos = mp.get_property_number("time-pos", 0)
@@ -214,12 +220,12 @@ local function render()
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
     shadow_text(a,fmt_time(pos),margin,bottom+4,21,7,true)
     shadow_text(a,fmt_time(duration),w-margin,bottom+4,21,9,true)
-    hover_circle(a,w-100,bottom-59,23,w-120,bottom-85,w-77,bottom-45)
-    shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,w-111,bottom-70,21)
-    add_box("volume",w-120,bottom-85,w-77,bottom-45,function() volume_popup=not volume_popup; settings=false; menu=false; render() end)
-    hover_circle(a,w-54,bottom-59,23,w-80,bottom-85,w-37,bottom-45)
-    shape(a,icon.gear,w-65,bottom-70,21)
-    add_box("settings",w-80,bottom-85,w-37,bottom-45,function() settings=not settings; menu=false; volume_popup=false; render() end)
+    icon_button(a,{name="volume",x=w-100.5,y=bottom-59.5,radius=23,size=21,
+        hit={w-120,bottom-85,w-77,bottom-45},icon=mp.get_property_native("mute") and icon.muted or icon.volume,
+        action=function() volume_popup=not volume_popup; settings=false; menu=false; render() end})
+    icon_button(a,{name="settings",x=w-54.5,y=bottom-59.5,radius=23,size=21,
+        hit={w-80,bottom-85,w-37,bottom-45},icon=icon.gear,
+        action=function() settings=not settings; menu=false; volume_popup=false; render() end})
 
     if menu then
         local pw, ph, px, py = 290, 296, w-315, 72
@@ -264,12 +270,12 @@ local function render()
         rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
         text(a,"Rotate",px+50,py+154,18,7,false)
         local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
-        hover_circle(a,rotate_left_x,py+165,20,rotate_left_x-21,py+145,rotate_left_x+21,py+187)
-        hover_circle(a,rotate_right_x,py+165,20,rotate_right_x-21,py+145,rotate_right_x+21,py+187)
-        shape(a,icon.rotate_left,rotate_left_x-8,py+157,16,C.white,0,false)
-        shape(a,icon.rotate_right,rotate_right_x-8,py+157,16,C.white,0,false)
-        add_box("rotate-left",rotate_left_x-21,py+145,rotate_left_x+21,py+187,function() mp.commandv("add","video-rotate",-90) end)
-        add_box("rotate-right",rotate_right_x-21,py+145,rotate_right_x+21,py+187,function() mp.commandv("add","video-rotate",90) end)
+        icon_button(a,{name="rotate-left",x=rotate_left_x,y=py+165,radius=20,size=16,shadow=false,
+            hit={rotate_left_x-21,py+145,rotate_left_x+21,py+187},icon=icon.rotate_left,
+            action=function() mp.commandv("add","video-rotate",-90) end})
+        icon_button(a,{name="rotate-right",x=rotate_right_x,y=py+165,radius=20,size=16,shadow=false,
+            hit={rotate_right_x-21,py+145,rotate_right_x+21,py+187},icon=icon.rotate_right,
+            action=function() mp.commandv("add","video-rotate",90) end})
         rect(a,px+10,py+193,px+pw-10,py+194,C.white,210)
         text(a,"Playback Speed",px+28,py+207,18,7,true)
         local speeds={0.5,1,1.25,1.5,2}; local current_speed=mp.get_property_number("speed",1)
@@ -283,8 +289,9 @@ local function render()
         local px,py,pw,ph=w-280,bottom-172,250,78
         triangle(a,w-110,py+ph,w-100,py+ph+11,w-90,py+ph,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
-        shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,px+20,py+28,21,C.white,0,false)
-        add_box("mute",px+9,py+16,px+50,py+61,function() mp.command("cycle mute"); render() end)
+        icon_button(a,{name="mute",x=px+30.5,y=py+38.5,radius=20,size=21,shadow=false,
+            hit={px+9,py+16,px+50,py+61},icon=mp.get_property_native("mute") and icon.muted or icon.volume,
+            action=function() mp.command("cycle mute"); render() end})
         local vx1,vx2,vy=px+75,px+225,py+39; rect(a,vx1,vy-2,vx2,vy+2,C.track,80)
         local vol=math.min(100,mp.get_property_number("volume",100)); rect(a,vx1,vy-2,vx1+(vx2-vx1)*vol/100,vy+2,C.white,0); rect(a,vx1+(vx2-vx1)*vol/100-7,vy-7,vx1+(vx2-vx1)*vol/100+7,vy+7,C.white,0)
         add_box("volslider",vx1,vy-18,vx2,vy+18,function(mx) mp.set_property_number("volume",100*(mx-vx1)/(vx2-vx1)); render() end)
