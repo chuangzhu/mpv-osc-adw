@@ -295,6 +295,12 @@ end
 
 local function activate(x,y)
     for i=#hitboxes,1,-1 do local b=hitboxes[i]; if x>=b.x1 and x<=b.x2 and y>=b.y1 and y<=b.y2 then b.action(x,y); schedule_hide(); render(); return true end end
+    if menu or settings or volume_popup then
+        menu,settings,volume_popup=false,false,false
+        schedule_hide()
+        render()
+        return true
+    end
     return false
 end
 
