@@ -1,5 +1,5 @@
 -- GNOME Showtime inspired OSC for mpv
--- Install as ~/.config/mpv/scripts/adw-osc.lua and disable mpv's stock OSC.
+-- Install as ~/.config/mpv/scripts/osc-adw.lua and disable mpv's stock OSC.
 local mp = require "mp"
 local assdraw = require "mp.assdraw"
 local utils = require "mp.utils"
@@ -303,13 +303,10 @@ local function video_tap(x,y)
     local zone = x < w/3 and "left" or (x > w*2/3 and "right" or "center")
     local now = mp.get_time()
     if last_tap and last_tap.zone == zone and now-last_tap.time <= 0.32 then
-        if tap_timer then tap_timer:kill(); tap_timer=nil end
         if zone=="left" then mp.commandv("seek",-10,"relative+exact") elseif zone=="right" then mp.commandv("seek",10,"relative+exact") else mp.command("cycle fullscreen") end
         last_tap=nil; schedule_hide(); render(); return
     end
     last_tap={zone=zone,time=now}
-    if tap_timer then tap_timer:kill() end
-    tap_timer=mp.add_timeout(0.33,function() last_tap=nil; mp.command("cycle pause"); schedule_hide(); render() end)
 end
 
 mp.add_forced_key_binding("MBTN_LEFT","adw-click",function() local x,y=mouse(); if not activate(x,y) then video_tap(x,y) end end)
@@ -318,7 +315,7 @@ mp.add_forced_key_binding("MBTN_LEFT_DBL","adw-native-double",function() end) --
 mp.add_forced_key_binding("WHEEL_UP","adw-vol-up",function() mp.commandv("add","volume",5); volume_popup=true; schedule_hide(); render() end)
 mp.add_forced_key_binding("WHEEL_DOWN","adw-vol-down",function() mp.commandv("add","volume",-5); volume_popup=true; schedule_hide(); render() end)
 
-for _,p in ipairs({"pause","time-pos","duration","media-title","fullscreen","volume","mute","speed"}) do mp.observe_property(p,"native",function() if visible then render() end end) end
+for _,p in ipairs({"pause","time-pos","duration","media-title","osd-dimensions","fullscreen","volume","mute","speed",u}) do mp.observe_property(p,"native",function() if visible then render() end end) end
 mp.register_event("file-loaded",function() schedule_hide(); render() end)
 mp.register_event("end-file",function() visible=true; render() end)
 mp.register_event("shutdown",function() overlay:remove() end)
