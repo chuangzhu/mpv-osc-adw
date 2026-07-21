@@ -9,7 +9,8 @@ mkdir -p ~/.config/mpv/scripts
 cp osc-adw.lua ~/.config/mpv/scripts/
 ```
 
-`Open…` requires [`zenity`](https://gitlab.gnome.org/GNOME/zenity) to be available on `PATH`.
+Dependencies: [adwaita-fonts](https://gitlab.gnome.org/GNOME/adwaita-fonts),
+and [`zenity`](https://gitlab.gnome.org/GNOME/zenity) for `Open…` file chooser.
 
 Recommended mpv settings:
 

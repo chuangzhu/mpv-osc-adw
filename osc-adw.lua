@@ -13,8 +13,8 @@ local last_tap = nil
 local hitboxes = {}
 
 local C = {
-    white = "&HFFFFFF&", panel = "&H303035&", track = "&H99FFFFFF&",
-    shadow = "&H000000&", selected = "&H55555C&",
+    white = "&HFFFFFF&", panel = "&H3A3636&", track = "&H99FFFFFF&",
+    shadow = "&H000000&", selected = "&H4E4A4A&",
 }
 
 -- ASS drawings transcribed from the 16x16 Adwaita symbolic SVG path data.
@@ -71,13 +71,13 @@ end
 
 local function text(a, value, x, y, size, align, bold, alpha)
     a:new_event()
-    a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnSans\\fs%d\\b%d\\bord0\\shad0\\1c%s\\1a&H%02X&}%s", align or 7, x, y, size, bold and 1 or 0, C.white, alpha or 0, esc(value)))
+    a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnAdwaita Sans\\fs%d\\b%d\\bord0\\shad0\\1c%s\\1a&H%02X&}%s", align or 7, x, y, size, bold and 1 or 0, C.white, alpha or 0, esc(value)))
 end
 
 local function shadow_text(a, value, x, y, size, align, bold)
     for _,layer in ipairs({{1,65},{5,145}}) do
         a:new_event()
-        a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnSans\\fs%d\\b%d\\bord0\\shad0\\blur%d\\1c%s\\1a&H%02X&}%s", align or 7,x,y,size,bold and 1 or 0,layer[1],C.shadow,layer[2],esc(value)))
+        a:append(string.format("{\\an%d\\pos(%.1f,%.1f)\\fnAdwaita Sans\\fs%d\\b%d\\bord0\\shad0\\blur%d\\1c%s\\1a&H%02X&}%s", align or 7,x,y,size,bold and 1 or 0,layer[1],C.shadow,layer[2],esc(value)))
     end
     text(a,value,x,y,size,align,bold)
 end
@@ -212,15 +212,15 @@ local function render()
     local pos = mp.get_property_number("time-pos", 0)
     local title = mp.get_property("media-title", "Video"):gsub("%.[^%.]+$", "")
     -- Title and trailing buttons share one middle-aligned toolbar row.
-    shadow_text(a, title, margin, bottom-59, 30, 4, true)
+    shadow_text(a, title, margin, bottom-59, 26, 4, true)
     local x1, x2, sy = margin, w-margin, bottom-18
     rect(a,x1,sy-2,x2,sy+2,C.track,217)
     local p = duration > 0 and math.max(0,math.min(1,pos/duration)) or 0
     rect(a,x1,sy-2,x1+(x2-x1)*p,sy+2,C.white,0)
     shadow_circle(a,x1+(x2-x1)*p,sy,12)
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
-    shadow_text(a,fmt_time(pos),margin,bottom+4,21,7,true)
-    shadow_text(a,fmt_time(duration),w-margin,bottom+4,21,9,true)
+    shadow_text(a,fmt_time(pos),margin,bottom+4,18,7,true)
+    shadow_text(a,fmt_time(duration),w-margin,bottom+4,18,9,true)
     icon_button(a,{name="volume",x=w-100.5,y=bottom-59.5,radius=21,size=20,
         hit={w-120,bottom-85,w-77,bottom-45},icon=mp.get_property_native("mute") and icon.muted or icon.volume,
         action=function() volume_popup=not volume_popup; settings=false; menu=false; render() end})
@@ -230,15 +230,15 @@ local function render()
 
     if menu then
         local pw, ph, px, py = 290, 296, w-315, 68
-        triangle(a,w-90,py,w-80,py-11,w-70,py,C.panel,5)
-        round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
+        triangle(a,w-90,py,w-80,py-11,w-70,py,C.panel,0)
+        round_rect(a,px,py,px+pw,py+ph,14,C.panel,0)
         local items={
-            {"New Window","Ctrl+N",function() mp.commandv("run","mpv") end},
+            {"New Window","Ctrl+N",function() mp.commandv("run","mpv","--player-operation-mode=pseudo-gui") end},
             {"Open…","Ctrl+O",open_file,"sep"},
             {"Show in Files","",function() local path=mp.get_property("path"); if path then local dir=select(1,utils.split_path(path)); mp.commandv("run","xdg-open",dir) end end,"sep"},
             {"Take Screenshot","Ctrl+Alt+S",function() mp.command("screenshot") end,"sep"},
-            {"Keyboard Shortcuts","Ctrl+?",function() mp.osd_message("Space  Play/Pause   ←/→  Seek   F  Fullscreen",4) end},
-            {"About Video Player","",function() mp.osd_message("Showtime OSC for mpv",3) end},
+            {"Keyboard Shortcuts","Ctrl+?",function() mp.command("script-binding stats/display-page-4-toggle") end},
+            {"About Video Player","",function() mp.osd_message("mpv-osc-adw",3) end},
         }
         local yy=py+8
         for i,it in ipairs(items) do
@@ -253,27 +253,27 @@ local function render()
         -- Size the popover around the 80px-spaced speed buttons while keeping
         -- its right edge and pointer anchored to the settings button.
         local pw,ph,px,py=448,304,w-467,bottom-397
-        triangle(a,w-64,py+ph-2,w-54,py+ph+9,w-44,py+ph-2,C.panel,5)
-        round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
+        triangle(a,w-64,py+ph-2,w-54,py+ph+9,w-44,py+ph-2,C.panel,0)
+        round_rect(a,px,py,px+pw,py+ph,14,C.panel,0)
         local function settings_row(name,y1,y2,action)
-            if is_hovered(px+10,py+y1,px+pw-10,py+y2) then round_rect(a,px+10,py+y1,px+pw-10,py+y2,9,C.selected,0) end
-            add_box(name,px+10,py+y1,px+pw-10,py+y2,action)
+            if is_hovered(px+8,py+y1,px+pw-10,py+y2) then round_rect(a,px+8,py+y1,px+pw-10,py+y2,9,C.selected,0) end
+            add_box(name,px+8,py+y1,px+pw-10,py+y2,action)
         end
-        settings_row("language",6,43,function() mp.command("cycle audio") end)
+        settings_row("language",8,43,function() mp.command("cycle audio") end)
         settings_row("subtitles",44,82,function() mp.command("cycle sub") end)
         local repeat_on=mp.get_property("loop-file","no")=="inf"
         settings_row("repeat",94,135,function()
             mp.set_property("loop-file",repeat_on and "no" or "inf")
         end)
-        text(a,"Language",px+50,py+14,18,7,false)
+        text(a,"Language",px+50,py+16,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70,false)
-        text(a,"Subtitles",px+50,py+53,18,7,false)
+        text(a,"Subtitles",px+50,py+54,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70,false)
         rect(a,px+10,py+88,px+pw-10,py+89,C.white,210)
         if repeat_on then shape(a,icon.check,px+24,py+106,18,C.white,0,false) end
-        text(a,"Repeat",px+50,py+104,18,7,false)
+        text(a,"Repeat",px+50,py+106,18,7,false)
         rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
-        text(a,"Rotate",px+50,py+157,18,7,false)
+        text(a,"Rotate",px+50,py+159,18,7,false)
         local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
         icon_button(a,{name="rotate-left",x=rotate_left_x,y=py+167,radius=20,size=16,shadow=false,
             icon=icon.rotate_left,
@@ -292,8 +292,8 @@ local function render()
         end
     elseif volume_popup then
         local px,py,pw,ph=w-280,bottom-172,250,78
-        triangle(a,w-110,py+ph,w-100,py+ph+11,w-90,py+ph,C.panel,5)
-        round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
+        triangle(a,w-110,py+ph,w-100,py+ph+11,w-90,py+ph,C.panel,0)
+        round_rect(a,px,py,px+pw,py+ph,14,C.panel,0)
         icon_button(a,{name="mute",x=px+30.5,y=py+38.5,radius=20,size=21,shadow=false,
             hit={px+9,py+16,px+50,py+61},icon=mp.get_property_native("mute") and icon.muted or icon.volume,
             action=function() mp.command("cycle mute"); render() end})
