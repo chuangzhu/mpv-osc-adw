@@ -228,8 +228,8 @@ local function render()
         action=function() settings=not settings; menu=false; volume_popup=false; render() end})
 
     if menu then
-        local pw, ph, px, py = 290, 296, w-315, 72
-        triangle(a,w-88,py,w-78,py-11,w-68,py,C.panel,5)
+        local pw, ph, px, py = 290, 296, w-315, 68
+        triangle(a,w-90,py,w-80,py-11,w-70,py,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         local items={
             {"New Window","Ctrl+N",function() mp.commandv("run","mpv") end},
@@ -249,9 +249,9 @@ local function render()
             if it[4] then rect(a,px+10,yy+5,px+pw-10,yy+6,C.white,210); yy=yy+12 end
         end
     elseif settings then
-        -- Match Showtime's wider options popover.  Its body reaches farther
-        -- right; the stock pointer geometry then joins the bottom edge.
-        local pw,ph,px,py=528,304,w-547,bottom-397
+        -- Size the popover around the 80px-spaced speed buttons while keeping
+        -- its right edge and pointer anchored to the settings button.
+        local pw,ph,px,py=448,304,w-467,bottom-397
         triangle(a,w-64,py+ph-2,w-54,py+ph+9,w-44,py+ph-2,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         local function settings_row(name,y1,y2,action)
@@ -263,24 +263,24 @@ local function render()
         settings_row("repeat",94,135,function() mp.command("cycle loop-file") end)
         text(a,"Language",px+50,py+14,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70,false)
-        text(a,"Subtitles",px+50,py+52,18,7,false)
+        text(a,"Subtitles",px+50,py+53,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70,false)
         rect(a,px+10,py+88,px+pw-10,py+89,C.white,210)
-        text(a,"Repeat",px+50,py+102,18,7,false)
+        text(a,"Repeat",px+50,py+104,18,7,false)
         rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
-        text(a,"Rotate",px+50,py+154,18,7,false)
+        text(a,"Rotate",px+50,py+157,18,7,false)
         local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
-        icon_button(a,{name="rotate-left",x=rotate_left_x,y=py+165,radius=20,size=16,shadow=false,
-            hit={rotate_left_x-21,py+145,rotate_left_x+21,py+187},icon=icon.rotate_left,
+        icon_button(a,{name="rotate-left",x=rotate_left_x,y=py+167,radius=20,size=16,shadow=false,
+            icon=icon.rotate_left,
             action=function() mp.commandv("add","video-rotate",-90) end})
-        icon_button(a,{name="rotate-right",x=rotate_right_x,y=py+165,radius=20,size=16,shadow=false,
-            hit={rotate_right_x-21,py+145,rotate_right_x+21,py+187},icon=icon.rotate_right,
+        icon_button(a,{name="rotate-right",x=rotate_right_x,y=py+167,radius=20,size=16,shadow=false,
+            icon=icon.rotate_right,
             action=function() mp.commandv("add","video-rotate",90) end})
         rect(a,px+10,py+193,px+pw-10,py+194,C.white,210)
         text(a,"Playback Speed",px+28,py+207,18,7,true)
         local speeds={0.5,1,1.25,1.5,2}; local current_speed=mp.get_property_number("speed",1)
         for i,s in ipairs(speeds) do
-            local xx=px+63+(i-1)*100
+            local xx=px+63+(i-1)*80
             if s==current_speed or is_hovered(xx-38,py+244,xx+38,py+286) then round_rect(a,xx-38,py+244,xx+38,py+286,21,C.selected,0) end
             text(a,string.format("%g×",s),xx,py+265,17,5,s==current_speed)
             add_box("speed"..i,xx-38,py+244,xx+38,py+286,function() mp.set_property_number("speed",s); render() end)
