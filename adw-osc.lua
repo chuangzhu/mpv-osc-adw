@@ -197,29 +197,40 @@ local function render()
             if it[4] then rect(a,px+10,yy+5,px+pw-10,yy+6,C.white,210); yy=yy+12 end
         end
     elseif settings then
-        local pw,ph,px,py=510,292,w-555,bottom-372
+        local pw,ph,px,py=510,304,w-555,bottom-384
         triangle(a,w-75,py+ph,w-54,py+ph+16,w-33,py+ph,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         local function settings_row(name,y1,y2,action)
             if is_hovered(px+10,py+y1,px+pw-10,py+y2) then round_rect(a,px+10,py+y1,px+pw-10,py+y2,9,C.selected,0) end
             add_box(name,px+10,py+y1,px+pw-10,py+y2,action)
         end
-        settings_row("language",6,48,function() mp.command("cycle audio") end)
-        settings_row("subtitles",50,92,function() mp.command("cycle sub") end)
-        settings_row("repeat",105,151,function() mp.command("cycle loop-file") end)
-        text(a,"Language                                      ›",px+28,py+22,18,7,false)
-        text(a,"Subtitles                                     ›",px+28,py+66,18,7,false)
-        rect(a,px+10,py+98,px+pw-10,py+99,C.white,210)
-        text(a,"Repeat",px+28,py+122,18,7,false)
-        rect(a,px+10,py+157,px+pw-10,py+158,C.white,210)
-        text(a,"Rotate                         ↶      ↷",px+28,py+178,18,7,false)
-        hover_circle(a,px+437,py+180,20,px+416,py+160,px+458,py+202)
-        hover_circle(a,px+478,py+180,20,px+458,py+160,px+500,py+202)
-        add_box("rotate-left",px+416,py+160,px+458,py+202,function() mp.commandv("add","video-rotate",-90) end)
-        add_box("rotate-right",px+458,py+160,px+500,py+202,function() mp.commandv("add","video-rotate",90) end)
-        rect(a,px+10,py+207,px+pw-10,py+208,C.white,210)
-        text(a,"Playback Speed",px+28,py+230,18,7,true)
-        local speeds={0.5,1,1.25,1.5,2}; for i,s in ipairs(speeds) do local xx=px+54+(i-1)*100; if is_hovered(xx-38,py+248,xx+38,py+290) then round_rect(a,xx-38,py+248,xx+38,py+290,21,C.selected,0) end; text(a,string.format("%g×",s),xx,py+270,17,5,s==mp.get_property_number("speed",1)); add_box("speed"..i,xx-38,py+248,xx+38,py+290,function() mp.set_property_number("speed",s); render() end) end
+        settings_row("language",8,50,function() mp.command("cycle audio") end)
+        settings_row("subtitles",52,94,function() mp.command("cycle sub") end)
+        settings_row("repeat",108,152,function() mp.command("cycle loop-file") end)
+        text(a,"Language",px+28,py+23,18,7,false)
+        text(a,"›",px+pw-28,py+23,20,9,false,70)
+        text(a,"Subtitles",px+28,py+67,18,7,false)
+        text(a,"›",px+pw-28,py+67,20,9,false,70)
+        rect(a,px+10,py+100,px+pw-10,py+101,C.white,210)
+        text(a,"Repeat",px+28,py+124,18,7,false)
+        rect(a,px+10,py+160,px+pw-10,py+161,C.white,210)
+        text(a,"Rotate",px+28,py+181,18,7,false)
+        local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
+        hover_circle(a,rotate_left_x,py+182,20,rotate_left_x-21,py+162,rotate_left_x+21,py+204)
+        hover_circle(a,rotate_right_x,py+182,20,rotate_right_x-21,py+162,rotate_right_x+21,py+204)
+        text(a,"↶",rotate_left_x,py+181,21,5,false)
+        text(a,"↷",rotate_right_x,py+181,21,5,false)
+        add_box("rotate-left",rotate_left_x-21,py+162,rotate_left_x+21,py+204,function() mp.commandv("add","video-rotate",-90) end)
+        add_box("rotate-right",rotate_right_x-21,py+162,rotate_right_x+21,py+204,function() mp.commandv("add","video-rotate",90) end)
+        rect(a,px+10,py+212,px+pw-10,py+213,C.white,210)
+        text(a,"Playback Speed",px+28,py+232,18,7,true)
+        local speeds={0.5,1,1.25,1.5,2}; local current_speed=mp.get_property_number("speed",1)
+        for i,s in ipairs(speeds) do
+            local xx=px+54+(i-1)*100
+            if s==current_speed or is_hovered(xx-38,py+252,xx+38,py+294) then round_rect(a,xx-38,py+252,xx+38,py+294,21,C.selected,0) end
+            text(a,string.format("%g×",s),xx,py+274,17,5,s==current_speed)
+            add_box("speed"..i,xx-38,py+252,xx+38,py+294,function() mp.set_property_number("speed",s); render() end)
+        end
     elseif volume_popup then
         local px,py,pw=w-280,bottom-195,250
         triangle(a,w-118,py+78,w-94,py+94,w-70,py+78,C.panel,5)
