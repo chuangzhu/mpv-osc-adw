@@ -95,6 +95,20 @@ local function round_rect(a, x1, y1, x2, y2, r, color, alpha)
         x1+r,y1,x2-r,y1,x2-r+k,y1,x2,y1+r-k,x2,y1+r,x2,y2-r,x2,y2-r+k,x2-r+k,y2,x2-r,y2,x1+r,y2,x1+r-k,y2,x1,y2-r+k,x1,y2-r,x1,y1+r,x1,y1+r-k,x1+r-k,y1,x1+r,y1))
 end
 
+local function circle(a,cx,cy,r,color,alpha,blur)
+    local k=r*0.55228475
+    a:new_event()
+    a:append(string.format("{\\an7\\pos(0,0)\\p1\\bord0\\shad0\\blur%d\\1c%s\\1a&H%02X&}",blur or 0,color,alpha or 0))
+    a:append(string.format("m %.2f %.2f b %.2f %.2f %.2f %.2f %.2f %.2f b %.2f %.2f %.2f %.2f %.2f %.2f b %.2f %.2f %.2f %.2f %.2f %.2f b %.2f %.2f %.2f %.2f %.2f %.2f",
+        cx,cy-r,cx+k,cy-r,cx+r,cy-k,cx+r,cy,cx+r,cy+k,cx+k,cy+r,cx,cy+r,cx-k,cy+r,cx-r,cy+k,cx-r,cy,cx-r,cy-k,cx-k,cy-r,cx,cy-r))
+end
+
+local function shadow_circle(a,cx,cy,r)
+    circle(a,cx,cy,r,C.shadow,70,1)
+    circle(a,cx,cy,r,C.shadow,145,5)
+    circle(a,cx,cy,r,C.white,0,0)
+end
+
 local function is_hovered(x1,y1,x2,y2)
     local x,y=mp.get_mouse_pos()
     x,y=x or -1,y or -1
@@ -104,6 +118,18 @@ end
 
 local function triangle(a,x1,y1,x2,y2,x3,y3,color,alpha)
     a:new_event(); a:append(string.format("{\\an7\\pos(0,0)\\p1\\bord0\\shad0\\1c%s\\1a&H%02X&}m %.1f %.1f l %.1f %.1f %.1f %.1f",color,alpha or 0,x1,y1,x2,y2,x3,y3))
+end
+
+local function shade(a,w,h)
+    local stops={{0,.30},{.10,.20},{.20,.15},{.30,.10},{.65,.10},{.75,.15},{.85,.25},{1,.40}}
+    local bands=40
+    for i=0,bands-1 do
+        local p=(i+.5)/bands
+        local left,right=stops[1],stops[#stops]
+        for j=1,#stops-1 do if p>=stops[j][1] and p<=stops[j+1][1] then left,right=stops[j],stops[j+1]; break end end
+        local t=(p-left[1])/(right[1]-left[1]); local opacity=left[2]+(right[2]-left[2])*t
+        rect(a,0,h*i/bands,w,h*(i+1)/bands+.5,C.shadow,math.floor(255*(1-opacity)+.5))
+    end
 end
 
 local function hover_circle(a, x, y, radius, x1,y1,x2,y2)
@@ -144,16 +170,11 @@ local function render()
     local w, h = mp.get_osd_size()
     hitboxes = {}
     if w < 1 or h < 1 or not visible then overlay:remove(); return end
-    local a, bottom = assdraw.ass_new(), h - 48
+    local a, bottom, cy = assdraw.ass_new(), h - 78, h/2 - 36
 
     -- Showtime's .shade: a quiet edge gradient that keeps white controls
     -- legible over bright video without dimming the middle of the picture.
-    rect(a,0,0,w,h*0.10,C.shadow,178)
-    rect(a,0,h*0.10,w,h*0.22,C.shadow,204)
-    rect(a,0,h*0.22,w,h*0.34,C.shadow,230)
-    rect(a,0,h*0.65,w,h*0.76,C.shadow,230)
-    rect(a,0,h*0.76,w,h*0.88,C.shadow,204)
-    rect(a,0,h*0.88,w,h,C.shadow,153)
+    shade(a,w,h)
 
     -- Header controls, anchored to corners and therefore invariant in pixels.
     hover_circle(a,39,35,23,16,14,62,60)
@@ -167,28 +188,29 @@ local function render()
     add_box("close", w-57, 12, w-12, 60, function() mp.command("quit") end)
 
     -- Central transport controls.
-    hover_circle(a,w/2-72,h/2,31,w/2-105,h/2-37,w/2-45,h/2+35)
-    hover_circle(a,w/2,h/2,42,w/2-40,h/2-42,w/2+40,h/2+42)
-    hover_circle(a,w/2+72,h/2,31,w/2+45,h/2-37,w/2+105,h/2+35)
-    shape(a, icon.rewind, w/2-86, h/2-14, 28)
-    shape(a, mp.get_property_native("pause") and icon.play or icon.pause, w/2-18, h/2-20, 38)
-    shape(a, icon.forward, w/2+58, h/2-14, 28)
-    add_box("rewind",w/2-105,h/2-37,w/2-45,h/2+35,function() mp.commandv("seek",-10,"relative+exact") end)
-    add_box("pause",w/2-40,h/2-42,w/2+40,h/2+42,function() mp.command("cycle pause") end)
-    add_box("forward",w/2+45,h/2-37,w/2+105,h/2+35,function() mp.commandv("seek",10,"relative+exact") end)
+    hover_circle(a,w/2-72,cy,31,w/2-105,cy-37,w/2-45,cy+35)
+    hover_circle(a,w/2,cy,42,w/2-40,cy-42,w/2+40,cy+42)
+    hover_circle(a,w/2+72,cy,31,w/2+45,cy-37,w/2+105,cy+35)
+    shape(a, icon.rewind, w/2-84, cy-12, 24)
+    shape(a, mp.get_property_native("pause") and icon.play or icon.pause, w/2-18, cy-20, 38)
+    shape(a, icon.forward, w/2+60, cy-12, 24)
+    add_box("rewind",w/2-105,cy-37,w/2-45,cy+35,function() mp.commandv("seek",-10,"relative+exact") end)
+    add_box("pause",w/2-40,cy-42,w/2+40,cy+42,function() mp.command("cycle pause") end)
+    add_box("forward",w/2+45,cy-37,w/2+105,cy+35,function() mp.commandv("seek",10,"relative+exact") end)
 
     local margin, duration = 45, mp.get_property_number("duration", 0)
     local pos = mp.get_property_number("time-pos", 0)
     local title = mp.get_property("media-title", "Video"):gsub("%.[^%.]+$", "")
-    shadow_text(a, title, margin, bottom-58, 22, 7, true)
+    -- Title and trailing buttons share one middle-aligned toolbar row.
+    shadow_text(a, title, margin, bottom-59, 30, 4, true)
     local x1, x2, sy = margin, w-margin, bottom-18
-    rect(a,x1,sy-2,x2,sy+2,C.track,80)
+    rect(a,x1,sy-2,x2,sy+2,C.track,217)
     local p = duration > 0 and math.max(0,math.min(1,pos/duration)) or 0
     rect(a,x1,sy-2,x1+(x2-x1)*p,sy+2,C.white,0)
-    rect(a,x1+(x2-x1)*p-7,sy-7,x1+(x2-x1)*p+7,sy+7,C.white,0)
+    shadow_circle(a,x1+(x2-x1)*p,sy,12)
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
-    shadow_text(a,fmt_time(pos),margin,bottom+4,15,7,true)
-    shadow_text(a,fmt_time(duration),w-margin,bottom+4,15,9,true)
+    shadow_text(a,fmt_time(pos),margin,bottom+4,21,7,true)
+    shadow_text(a,fmt_time(duration),w-margin,bottom+4,21,9,true)
     hover_circle(a,w-94,bottom-59,23,w-120,bottom-85,w-77,bottom-45)
     shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,w-105,bottom-70,21)
     add_box("volume",w-120,bottom-85,w-77,bottom-45,function() volume_popup=not volume_popup; settings=false; menu=false; render() end)
