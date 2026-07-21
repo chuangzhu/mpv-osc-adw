@@ -26,6 +26,9 @@ window-rule {
     match app-id="mpv"
     geometry-corner-radius 12
     clip-to-geometry true
+}
+window-rule {
+    match app-id="mpv" is-focused=true
     shadow {
         on
         softness 12

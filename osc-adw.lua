@@ -214,8 +214,8 @@ local function render()
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
     shadow_text(a,fmt_time(pos),margin,bottom+4,21,7,true)
     shadow_text(a,fmt_time(duration),w-margin,bottom+4,21,9,true)
-    hover_circle(a,w-94,bottom-59,23,w-120,bottom-85,w-77,bottom-45)
-    shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,w-105,bottom-70,21)
+    hover_circle(a,w-100,bottom-59,23,w-120,bottom-85,w-77,bottom-45)
+    shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,w-111,bottom-70,21)
     add_box("volume",w-120,bottom-85,w-77,bottom-45,function() volume_popup=not volume_popup; settings=false; menu=false; render() end)
     hover_circle(a,w-54,bottom-59,23,w-80,bottom-85,w-37,bottom-45)
     shape(a,icon.gear,w-65,bottom-70,21)
@@ -245,7 +245,7 @@ local function render()
     elseif settings then
         -- Match Showtime's wider options popover.  Its body reaches farther
         -- right; the stock pointer geometry then joins the bottom edge.
-        local pw,ph,px,py=528,304,w-547,bottom-384
+        local pw,ph,px,py=528,304,w-547,bottom-397
         triangle(a,w-64,py+ph-2,w-54,py+ph+9,w-44,py+ph-2,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         local function settings_row(name,y1,y2,action)
@@ -280,9 +280,9 @@ local function render()
             add_box("speed"..i,xx-38,py+244,xx+38,py+286,function() mp.set_property_number("speed",s); render() end)
         end
     elseif volume_popup then
-        local px,py,pw=w-280,bottom-195,250
-        triangle(a,w-118,py+78,w-94,py+94,w-70,py+78,C.panel,5)
-        round_rect(a,px,py,px+pw,py+78,14,C.panel,5)
+        local px,py,pw,ph=w-280,bottom-172,250,78
+        triangle(a,w-110,py+ph,w-100,py+ph+11,w-90,py+ph,C.panel,5)
+        round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         shape(a,mp.get_property_native("mute") and icon.muted or icon.volume,px+20,py+28,21,C.white,0,false)
         add_box("mute",px+9,py+16,px+50,py+61,function() mp.command("cycle mute"); render() end)
         local vx1,vx2,vy=px+75,px+225,py+39; rect(a,vx1,vy-2,vx2,vy+2,C.track,80)
