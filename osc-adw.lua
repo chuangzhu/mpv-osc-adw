@@ -187,24 +187,24 @@ local function render()
     shade(a,w,h)
 
     -- Header controls, anchored to corners and therefore invariant in pixels.
-    icon_button(a,{name="fullscreen",x=39,y=35,radius=23,size=22,
-        hit={16,14,62,60},icon=mp.get_property_native("fullscreen") and icon.restore or icon.fullscreen,
+    icon_button(a,{name="fullscreen",x=30,y=30,radius=21,size=20,
+        icon=mp.get_property_native("fullscreen") and icon.restore or icon.fullscreen,
         action=function() mp.command("cycle fullscreen") end})
-    icon_button(a,{name="menu",x=w-78,y=36,radius=23,size=20,
-        hit={w-103,12,w-57,60},icon=icon.menu,
+    icon_button(a,{name="menu",x=w-80,y=30,radius=21,size=20,
+        icon=icon.menu,
         action=function() menu=not menu; settings=false; volume_popup=false; render() end})
-    icon_button(a,{name="close",x=w-33,y=35,radius=23,size=20,
-        hit={w-57,12,w-12,60},icon=icon.close,action=function() mp.command("quit") end})
+    icon_button(a,{name="close",x=w-30,y=30,radius=15,size=20,
+        hit={w-30-21,30-21,w-30+21,30+21},icon=icon.close,action=function() mp.command("quit") end})
 
     -- Central transport controls.
     icon_button(a,{name="rewind",x=w/2-72,y=cy,radius=31,size=24,
-        hit={w/2-105,cy-37,w/2-45,cy+35},icon=icon.rewind,
+        icon=icon.rewind,
         action=function() mp.commandv("seek",-10,"relative+exact") end})
     icon_button(a,{name="pause",x=w/2,y=cy,radius=42,size=38,
-        hit={w/2-40,cy-42,w/2+40,cy+42},icon=mp.get_property_native("pause") and icon.play or icon.pause,
+        icon=mp.get_property_native("pause") and icon.play or icon.pause,
         action=function() mp.command("cycle pause") end})
     icon_button(a,{name="forward",x=w/2+72,y=cy,radius=31,size=24,
-        hit={w/2+45,cy-37,w/2+105,cy+35},icon=icon.forward,
+        icon=icon.forward,
         action=function() mp.commandv("seek",10,"relative+exact") end})
 
     local margin, duration = 45, mp.get_property_number("duration", 0)
@@ -220,10 +220,10 @@ local function render()
     add_box("seek",x1,sy-15,x2,sy+15,function(mx) if duration>0 then mp.commandv("seek",duration*(mx-x1)/(x2-x1),"absolute+exact") end end)
     shadow_text(a,fmt_time(pos),margin,bottom+4,21,7,true)
     shadow_text(a,fmt_time(duration),w-margin,bottom+4,21,9,true)
-    icon_button(a,{name="volume",x=w-100.5,y=bottom-59.5,radius=23,size=21,
+    icon_button(a,{name="volume",x=w-100.5,y=bottom-59.5,radius=21,size=20,
         hit={w-120,bottom-85,w-77,bottom-45},icon=mp.get_property_native("mute") and icon.muted or icon.volume,
         action=function() volume_popup=not volume_popup; settings=false; menu=false; render() end})
-    icon_button(a,{name="settings",x=w-54.5,y=bottom-59.5,radius=23,size=21,
+    icon_button(a,{name="settings",x=w-54.5,y=bottom-59.5,radius=21,size=20,
         hit={w-80,bottom-85,w-37,bottom-45},icon=icon.gear,
         action=function() settings=not settings; menu=false; volume_popup=false; render() end})
 
