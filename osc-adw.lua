@@ -34,6 +34,7 @@ local icon = {
     go_next = "m 4 2 b 4 1.734 4.105 1.48 4.293 1.293 b 4.684 0.902 5.316 0.902 5.707 1.293 l 11.707 7.293 b 11.895 7.48 12 7.734 12 8 b 12 8.266 11.895 8.52 11.707 8.707 l 5.707 14.707 b 5.316 15.098 4.684 15.098 4.293 14.707 b 4.105 14.52 4 14.266 4 14 b 4 13.734 4.105 13.48 4.293 13.293 l 9.586 8 4.293 2.707 b 4.105 2.52 4 2.266 4 2",
     rotate_left = "m 8.914 2 b 8.34 2.008 7.762 2.086 7.188 2.238 b 4.133 3.059 2 5.836 2 9 l 0 9 0 10 0.008 10 b 0.004 10.266 0.109 10.52 0.293 10.707 l 2.293 12.707 b 2.684 13.098 3.316 13.098 3.707 12.707 l 5.707 10.707 b 5.891 10.52 5.996 10.266 5.996 10 l 6 10 6 9 4 9 b 4 6.73 5.516 4.758 7.707 4.168 b 9.895 3.582 12.195 4.535 13.332 6.5 b 14.465 8.465 14.141 10.93 12.535 12.535 b 12.145 12.926 12.145 13.559 12.535 13.949 b 12.926 14.34 13.559 14.34 13.949 13.949 b 16.188 11.711 16.645 8.238 15.063 5.5 b 13.875 3.445 11.758 2.176 9.484 2.02 b 9.293 2.004 9.105 1.996 8.914 2",
     rotate_right = "m 7.086 2 b 7.66 2.008 8.238 2.086 8.813 2.238 b 11.867 3.059 14 5.836 14 9 l 16 9 16 10 15.992 10 b 15.996 10.266 15.891 10.52 15.707 10.707 l 13.707 12.707 b 13.316 13.098 12.684 13.098 12.293 12.707 l 10.293 10.707 b 10.105 10.52 10.004 10.266 10.004 10 l 10 10 10 9 12 9 b 12 6.73 10.484 4.758 8.293 4.168 b 6.105 3.582 3.805 4.535 2.668 6.5 b 1.535 8.465 1.859 10.93 3.465 12.535 b 3.855 12.926 3.855 13.559 3.465 13.949 b 3.074 14.34 2.441 14.34 2.051 13.949 b -0.188 11.711 -0.645 8.238 0.938 5.5 b 2.125 3.445 4.242 2.176 6.516 2.02 b 6.703 2.004 6.895 1.996 7.086 2",
+    check = "m 13.754 4.66 b 13.93 4.461 14.016 4.199 14 3.934 b 13.981 3.668 13.859 3.422 13.66 3.246 b 13.461 3.07 13.199 2.984 12.934 3 b 12.668 3.02 12.422 3.141 12.246 3.34 l 5.949 10.535 3.707 8.293 b 3.316 7.902 2.684 7.902 2.293 8.293 b 2.105 8.48 2 8.734 2 9 b 2 9.266 2.105 9.52 2.293 9.707 l 5.293 12.707 b 5.488 12.902 5.758 13.012 6.031 13 b 6.309 12.992 6.57 12.867 6.754 12.66 l 13.754 4.66",
 }
 
 local function esc(s)
@@ -260,12 +261,16 @@ local function render()
         end
         settings_row("language",6,43,function() mp.command("cycle audio") end)
         settings_row("subtitles",44,82,function() mp.command("cycle sub") end)
-        settings_row("repeat",94,135,function() mp.command("cycle loop-file") end)
+        local repeat_on=mp.get_property("loop-file","no")=="inf"
+        settings_row("repeat",94,135,function()
+            mp.set_property("loop-file",repeat_on and "no" or "inf")
+        end)
         text(a,"Language",px+50,py+14,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70,false)
         text(a,"Subtitles",px+50,py+53,18,7,false)
         shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70,false)
         rect(a,px+10,py+88,px+pw-10,py+89,C.white,210)
+        if repeat_on then shape(a,icon.check,px+24,py+106,18,C.white,0,false) end
         text(a,"Repeat",px+50,py+104,18,7,false)
         rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
         text(a,"Rotate",px+50,py+157,18,7,false)
@@ -328,7 +333,7 @@ mp.add_forced_key_binding("MBTN_LEFT_DBL","adw-native-double",function() end) --
 mp.add_forced_key_binding("WHEEL_UP","adw-vol-up",function() mp.commandv("add","volume",5); volume_popup=true; schedule_hide(); render() end)
 mp.add_forced_key_binding("WHEEL_DOWN","adw-vol-down",function() mp.commandv("add","volume",-5); volume_popup=true; schedule_hide(); render() end)
 
-for _,p in ipairs({"pause","time-pos","duration","media-title","osd-dimensions","fullscreen","volume","mute","speed",u}) do mp.observe_property(p,"native",function() if visible then render() end end) end
+for _,p in ipairs({"pause","time-pos","duration","media-title","osd-dimensions","fullscreen","volume","mute","speed","loop-file"}) do mp.observe_property(p,"native",function() if visible then render() end end) end
 mp.register_event("file-loaded",function() schedule_hide(); render() end)
 mp.register_event("end-file",function() visible=true; render() end)
 mp.register_event("shutdown",function() overlay:remove() end)
