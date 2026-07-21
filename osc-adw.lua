@@ -137,7 +137,7 @@ local function shade(a,w,h)
 end
 
 local function icon_button(a,o)
-    local hit=o.hit or {o.x-o.radius,o.y-o.radius,o.x+o.radius,o.y+o.radius}
+    local hit=o.hit or {o.x-o.radius-2,o.y-o.radius-2,o.x+o.radius+2,o.y+o.radius+2}
     if is_hovered(hit[1],hit[2],hit[3],hit[4]) then
         round_rect(a,o.x-o.radius,o.y-o.radius,o.x+o.radius,o.y+o.radius,
             o.radius,o.hover_color or C.white,o.hover_alpha or 217)
@@ -166,7 +166,7 @@ end
 
 local function open_file()
     menu = false
-    mp.command_native_async({name="subprocess", playback_only=false,
+    mp.command_native_async({name="subprocess", playback_only=false, capture_stdout=true,
         args={"zenity", "--file-selection", "--title=Open File", "--file-filter=Videos | *.mp4 *.mkv *.webm *.avi *.mov *.m4v", "--file-filter=All files | *"}},
         function(success, result)
             if success and result and result.status == 0 then
@@ -195,7 +195,7 @@ local function render()
         icon=icon.menu,
         action=function() menu=not menu; settings=false; volume_popup=false; render() end})
     icon_button(a,{name="close",x=w-30,y=30,radius=15,size=20,
-        hit={w-30-21,30-21,w-30+21,30+21},icon=icon.close,action=function() mp.command("quit") end})
+        hit={w-30-23,30-23,w-30+23,30+23},icon=icon.close,action=function() mp.command("quit") end})
 
     -- Central transport controls.
     icon_button(a,{name="rewind",x=w/2-72,y=cy,radius=31,size=24,
