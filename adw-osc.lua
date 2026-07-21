@@ -120,16 +120,19 @@ local function triangle(a,x1,y1,x2,y2,x3,y3,color,alpha)
     a:new_event(); a:append(string.format("{\\an7\\pos(0,0)\\p1\\bord0\\shad0\\1c%s\\1a&H%02X&}m %.1f %.1f l %.1f %.1f %.1f %.1f",color,alpha or 0,x1,y1,x2,y2,x3,y3))
 end
 
+local function blurred_rect(a,x1,y1,x2,y2,alpha,blur)
+    a:new_event()
+    a:append(string.format("{\\an7\\pos(0,0)\\p1\\bord0\\shad0\\blur%.1f\\1c%s\\1a&H%02X&}m %.1f %.1f l %.1f %.1f %.1f %.1f %.1f %.1f",
+        blur,C.shadow,alpha,x1,y1,x2,y1,x2,y2,x1,y2))
+end
+
 local function shade(a,w,h)
-    local stops={{0,.30},{.10,.20},{.20,.15},{.30,.10},{.65,.10},{.75,.15},{.85,.25},{1,.40}}
-    local bands=40
-    for i=0,bands-1 do
-        local p=(i+.5)/bands
-        local left,right=stops[1],stops[#stops]
-        for j=1,#stops-1 do if p>=stops[j][1] and p<=stops[j+1][1] then left,right=stops[j],stops[j+1]; break end end
-        local t=(p-left[1])/(right[1]-left[1]); local opacity=left[2]+(right[2]-left[2])*t
-        rect(a,0,h*i/bands,w,h*(i+1)/bands+.5,C.shadow,math.floor(255*(1-opacity)+.5))
-    end
+    -- ASS has no gradient fill.  A light full-frame veil plus oversized,
+    -- blurred edge shapes produces a continuous falloff without striping.
+    rect(a,0,0,w,h,C.shadow,230)
+    blurred_rect(a,-70,-90,w+70,h*.055,174,52)
+    blurred_rect(a,-80,h*.82,w+80,h+90,185,62)
+    blurred_rect(a,-80,h*.94,w+80,h+100,155,38)
 end
 
 local function hover_circle(a, x, y, radius, x1,y1,x2,y2)
