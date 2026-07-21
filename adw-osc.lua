@@ -31,6 +31,9 @@ local icon = {
     gear = "m 7.5 1.02 b 6.949 1.02 6.504 1.465 6.504 2.016 l 6.504 2.469 b 6.031 2.598 5.574 2.789 5.148 3.035 l 4.824 2.711 b 4.434 2.32 3.805 2.32 3.414 2.711 l 2.711 3.418 b 2.32 3.809 2.32 4.438 2.711 4.828 l 3.031 5.148 b 2.785 5.574 2.598 6.031 2.469 6.504 l 2.016 6.504 b 1.465 6.504 1.02 6.949 1.02 7.5 l 1.02 8.5 b 1.02 9.051 1.465 9.496 2.016 9.496 l 2.465 9.496 b 2.598 9.969 2.785 10.426 3.031 10.852 l 2.711 11.172 b 2.32 11.563 2.32 12.191 2.711 12.582 l 3.414 13.289 b 3.805 13.68 4.434 13.68 4.824 13.289 l 5.145 12.969 b 5.574 13.211 6.027 13.402 6.504 13.527 l 6.504 13.984 b 6.504 14.535 6.949 14.98 7.5 14.98 l 8.496 14.98 b 9.051 14.98 9.496 14.535 9.496 13.984 l 9.496 13.531 b 9.969 13.402 10.426 13.211 10.852 12.965 l 11.172 13.289 b 11.563 13.68 12.191 13.68 12.582 13.289 l 13.289 12.582 b 13.68 12.191 13.68 11.563 13.289 11.172 l 12.969 10.852 b 13.211 10.426 13.402 9.969 13.527 9.496 l 13.981 9.496 b 14.535 9.496 14.981 9.051 14.981 8.5 l 14.981 7.5 b 14.981 6.949 14.535 6.504 13.981 6.504 l 13.531 6.504 b 13.402 6.031 13.211 5.574 12.965 5.148 l 13.289 4.828 b 13.68 4.438 13.68 3.809 13.289 3.418 l 12.582 2.711 b 12.191 2.32 11.563 2.32 11.172 2.711 l 10.852 3.031 b 10.426 2.789 9.969 2.602 9.496 2.473 l 9.496 2.016 b 9.496 1.465 9.051 1.02 8.496 1.02 l 7.5 1.02 m 8.016 4.996 b 9.676 4.996 11.016 6.34 11.016 7.996 b 11.016 9.652 9.676 10.996 8.016 10.996 b 6.359 10.996 5.016 9.652 5.016 7.996 b 5.016 6.34 6.359 4.996 8.016 4.996",
     rewind = "m 8.254 1 b 8.121 1.008 7.988 1.047 7.879 1.117 l 4.129 3.367 b 3.918 3.508 3.793 3.75 3.801 4 b 3.801 4.25 3.914 4.5 4.129 4.637 l 7.879 6.887 b 7.988 6.957 8.121 6.996 8.254 7 l 9.004 7 9.004 5 b 10.75 4.996 12.297 6.133 12.82 7.801 b 13.344 9.465 12.731 11.281 11.297 12.281 b 11 12.484 10.836 12.828 10.867 13.188 b 10.898 13.547 11.117 13.859 11.441 14.012 b 11.77 14.164 12.152 14.125 12.445 13.918 b 14.586 12.414 15.512 9.695 14.727 7.199 b 13.938 4.699 11.621 3.004 9.004 3 l 9.004 1 8.254 1 m 7.16 8.898 b 5.625 8.898 4.594 10.148 4.594 12.02 b 4.594 13.859 5.609 15.086 7.117 15.086 b 8.641 15.086 9.672 13.84 9.672 11.957 b 9.672 10.121 8.656 8.898 7.16 8.898 m 2.285 8.988 l 0.215 10.184 0.777 11.258 1.68 10.789 1.68 13.719 0.52 13.719 0.52 15.004 4.246 15.004 4.246 13.719 3.18 13.719 3.18 8.988 2.285 8.988 m 7.125 10.184 b 7.723 10.184 8.129 10.918 8.129 12.027 b 8.129 13.094 7.73 13.805 7.152 13.805 b 6.535 13.801 6.137 13.066 6.137 11.969 b 6.137 10.895 6.535 10.184 7.125 10.184",
     forward = "m 7.004 1 l 7.004 3 b 4.383 3.004 2.07 4.699 1.281 7.199 b 0.496 9.695 1.418 12.414 3.563 13.918 b 3.855 14.125 4.234 14.164 4.563 14.012 b 4.887 13.859 5.109 13.547 5.137 13.188 b 5.168 12.828 5.004 12.484 4.707 12.281 b 3.277 11.281 2.66 9.465 3.188 7.801 b 3.707 6.133 5.254 4.996 7.004 5 l 7.004 7 7.754 7 b 7.887 6.996 8.016 6.953 8.129 6.883 l 11.879 4.633 b 12.086 4.492 12.211 4.254 12.207 4 b 12.211 3.746 12.086 3.508 11.879 3.367 l 8.129 1.117 b 8.016 1.047 7.887 1.004 7.754 1 l 7.004 1 m 13.16 8.898 b 11.625 8.898 10.594 10.148 10.594 12.02 b 10.594 13.856 11.606 15.086 13.113 15.086 b 14.641 15.086 15.672 13.84 15.672 11.957 b 15.672 10.121 14.656 8.898 13.16 8.898 m 8.285 8.984 l 6.215 10.18 6.777 11.254 7.68 10.785 7.68 13.719 6.52 13.719 6.52 15 10.246 15 10.246 13.719 9.18 13.719 9.18 8.984 8.285 8.984 m 13.125 10.18 b 13.723 10.18 14.129 10.918 14.129 12.027 b 14.129 13.094 13.731 13.805 13.148 13.805 b 12.535 13.805 12.137 13.066 12.137 11.965 b 12.137 10.891 12.535 10.18 13.125 10.18",
+    go_next = "m 4 2 b 4 1.734 4.105 1.48 4.293 1.293 b 4.684 0.902 5.316 0.902 5.707 1.293 l 11.707 7.293 b 11.895 7.48 12 7.734 12 8 b 12 8.266 11.895 8.52 11.707 8.707 l 5.707 14.707 b 5.316 15.098 4.684 15.098 4.293 14.707 b 4.105 14.52 4 14.266 4 14 b 4 13.734 4.105 13.48 4.293 13.293 l 9.586 8 4.293 2.707 b 4.105 2.52 4 2.266 4 2",
+    rotate_left = "m 8.914 2 b 8.34 2.008 7.762 2.086 7.188 2.238 b 4.133 3.059 2 5.836 2 9 l 0 9 0 10 0.008 10 b 0.004 10.266 0.109 10.52 0.293 10.707 l 2.293 12.707 b 2.684 13.098 3.316 13.098 3.707 12.707 l 5.707 10.707 b 5.891 10.52 5.996 10.266 5.996 10 l 6 10 6 9 4 9 b 4 6.73 5.516 4.758 7.707 4.168 b 9.895 3.582 12.195 4.535 13.332 6.5 b 14.465 8.465 14.141 10.93 12.535 12.535 b 12.145 12.926 12.145 13.559 12.535 13.949 b 12.926 14.34 13.559 14.34 13.949 13.949 b 16.188 11.711 16.645 8.238 15.063 5.5 b 13.875 3.445 11.758 2.176 9.484 2.02 b 9.293 2.004 9.105 1.996 8.914 2",
+    rotate_right = "m 7.086 2 b 7.66 2.008 8.238 2.086 8.813 2.238 b 11.867 3.059 14 5.836 14 9 l 16 9 16 10 15.992 10 b 15.996 10.266 15.891 10.52 15.707 10.707 l 13.707 12.707 b 13.316 13.098 12.684 13.098 12.293 12.707 l 10.293 10.707 b 10.105 10.52 10.004 10.266 10.004 10 l 10 10 10 9 12 9 b 12 6.73 10.484 4.758 8.293 4.168 b 6.105 3.582 3.805 4.535 2.668 6.5 b 1.535 8.465 1.859 10.93 3.465 12.535 b 3.855 12.926 3.855 13.559 3.465 13.949 b 3.074 14.34 2.441 14.34 2.051 13.949 b -0.188 11.711 -0.645 8.238 0.938 5.5 b 2.125 3.445 4.242 2.176 6.516 2.02 b 6.703 2.004 6.895 1.996 7.086 2",
 }
 
 local function esc(s)
@@ -197,39 +200,41 @@ local function render()
             if it[4] then rect(a,px+10,yy+5,px+pw-10,yy+6,C.white,210); yy=yy+12 end
         end
     elseif settings then
-        local pw,ph,px,py=510,304,w-555,bottom-384
-        triangle(a,w-75,py+ph,w-54,py+ph+16,w-33,py+ph,C.panel,5)
+        -- Match Showtime's wider options popover.  Its body reaches farther
+        -- right; the stock pointer geometry then joins the bottom edge.
+        local pw,ph,px,py=528,304,w-547,bottom-384
+        triangle(a,w-64,py+ph-2,w-54,py+ph+9,w-44,py+ph-2,C.panel,5)
         round_rect(a,px,py,px+pw,py+ph,14,C.panel,5)
         local function settings_row(name,y1,y2,action)
             if is_hovered(px+10,py+y1,px+pw-10,py+y2) then round_rect(a,px+10,py+y1,px+pw-10,py+y2,9,C.selected,0) end
             add_box(name,px+10,py+y1,px+pw-10,py+y2,action)
         end
-        settings_row("language",8,50,function() mp.command("cycle audio") end)
-        settings_row("subtitles",52,94,function() mp.command("cycle sub") end)
-        settings_row("repeat",108,152,function() mp.command("cycle loop-file") end)
-        text(a,"Language",px+28,py+23,18,7,false)
-        text(a,"›",px+pw-28,py+23,20,9,false,70)
-        text(a,"Subtitles",px+28,py+67,18,7,false)
-        text(a,"›",px+pw-28,py+67,20,9,false,70)
-        rect(a,px+10,py+100,px+pw-10,py+101,C.white,210)
-        text(a,"Repeat",px+28,py+124,18,7,false)
-        rect(a,px+10,py+160,px+pw-10,py+161,C.white,210)
-        text(a,"Rotate",px+28,py+181,18,7,false)
+        settings_row("language",6,43,function() mp.command("cycle audio") end)
+        settings_row("subtitles",44,82,function() mp.command("cycle sub") end)
+        settings_row("repeat",94,135,function() mp.command("cycle loop-file") end)
+        text(a,"Language",px+50,py+14,18,7,false)
+        shape(a,icon.go_next,px+pw-38,py+19,12,C.white,70)
+        text(a,"Subtitles",px+50,py+52,18,7,false)
+        shape(a,icon.go_next,px+pw-38,py+57,12,C.white,70)
+        rect(a,px+10,py+88,px+pw-10,py+89,C.white,210)
+        text(a,"Repeat",px+50,py+102,18,7,false)
+        rect(a,px+10,py+140,px+pw-10,py+141,C.white,210)
+        text(a,"Rotate",px+50,py+154,18,7,false)
         local rotate_left_x,rotate_right_x=px+pw-82,px+pw-38
-        hover_circle(a,rotate_left_x,py+182,20,rotate_left_x-21,py+162,rotate_left_x+21,py+204)
-        hover_circle(a,rotate_right_x,py+182,20,rotate_right_x-21,py+162,rotate_right_x+21,py+204)
-        text(a,"↶",rotate_left_x,py+181,21,5,false)
-        text(a,"↷",rotate_right_x,py+181,21,5,false)
-        add_box("rotate-left",rotate_left_x-21,py+162,rotate_left_x+21,py+204,function() mp.commandv("add","video-rotate",-90) end)
-        add_box("rotate-right",rotate_right_x-21,py+162,rotate_right_x+21,py+204,function() mp.commandv("add","video-rotate",90) end)
-        rect(a,px+10,py+212,px+pw-10,py+213,C.white,210)
-        text(a,"Playback Speed",px+28,py+232,18,7,true)
+        hover_circle(a,rotate_left_x,py+165,20,rotate_left_x-21,py+145,rotate_left_x+21,py+187)
+        hover_circle(a,rotate_right_x,py+165,20,rotate_right_x-21,py+145,rotate_right_x+21,py+187)
+        shape(a,icon.rotate_left,rotate_left_x-8,py+157,16)
+        shape(a,icon.rotate_right,rotate_right_x-8,py+157,16)
+        add_box("rotate-left",rotate_left_x-21,py+145,rotate_left_x+21,py+187,function() mp.commandv("add","video-rotate",-90) end)
+        add_box("rotate-right",rotate_right_x-21,py+145,rotate_right_x+21,py+187,function() mp.commandv("add","video-rotate",90) end)
+        rect(a,px+10,py+193,px+pw-10,py+194,C.white,210)
+        text(a,"Playback Speed",px+28,py+207,18,7,true)
         local speeds={0.5,1,1.25,1.5,2}; local current_speed=mp.get_property_number("speed",1)
         for i,s in ipairs(speeds) do
-            local xx=px+54+(i-1)*100
-            if s==current_speed or is_hovered(xx-38,py+252,xx+38,py+294) then round_rect(a,xx-38,py+252,xx+38,py+294,21,C.selected,0) end
-            text(a,string.format("%g×",s),xx,py+274,17,5,s==current_speed)
-            add_box("speed"..i,xx-38,py+252,xx+38,py+294,function() mp.set_property_number("speed",s); render() end)
+            local xx=px+63+(i-1)*100
+            if s==current_speed or is_hovered(xx-38,py+244,xx+38,py+286) then round_rect(a,xx-38,py+244,xx+38,py+286,21,C.selected,0) end
+            text(a,string.format("%g×",s),xx,py+265,17,5,s==current_speed)
+            add_box("speed"..i,xx-38,py+244,xx+38,py+286,function() mp.set_property_number("speed",s); render() end)
         end
     elseif volume_popup then
         local px,py,pw=w-280,bottom-195,250
