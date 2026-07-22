@@ -1,6 +1,8 @@
 # mpv-osc-adw
 
-A mpv OSC heavily inspired by GNOME Showtime.
+An mpv OSC heavily inspired by GNOME Showtime.
+
+<img width="990" height="595" alt="Playing Big Buck Bunny" src="https://github.com/user-attachments/assets/45051fa6-eced-40ae-beed-b53fcd9d6677" />
 
 ## Install
 
@@ -45,6 +47,11 @@ window-rule {
 - Double-tap the left third to rewind 10 seconds.
 - Double-tap the right third to fast-forward 10 seconds.
 - Double-tap the middle third to toggle fullscreen.
+
+## TODO
+
+- [ ] Make menus more Adwaita.
+- [ ] Currently the sizes are based on 125% scaled GTK. Make it adapt to all HiDPI scalings.
 
 ## Acknowledgement
 
